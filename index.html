@@ -2,13 +2,11 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>Ribbo - القصص والدردشة</title>
-  <!-- Firebase SDKs -->
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-storage-compat.js"></script>
-  <!-- Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
     * {
@@ -18,20 +16,35 @@
     }
 
     body {
-      font-family: 'Tajawal', 'Helvetica Neue', sans-serif;
-      background: #0a0a0a;
-      color: white;
+      font-family: 'Segoe UI', 'Tajawal', system-ui, -apple-system, sans-serif;
+      background: #1a1a1a;
+      color: #ffffff;
       direction: rtl;
     }
 
-    /* شاشة تسجيل الدخول */
+    /* ==================== الألوان الرئيسية ==================== */
+    :root {
+      --bg-dark: #0f0f0f;
+      --bg-card: #1e1e1e;
+      --bg-hover: #2a2a2a;
+      --yellow: #FFD700;
+      --yellow-dark: #E6C200;
+      --text-primary: #ffffff;
+      --text-secondary: #aaaaaa;
+      --border: #333333;
+      --danger: #ff4444;
+      --success: #00C851;
+      --info: #33b5e5;
+    }
+
+    /* ==================== شاشة تسجيل الدخول ==================== */
     .auth-screen {
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: var(--bg-dark);
       z-index: 2000;
       display: flex;
       justify-content: center;
@@ -40,77 +53,76 @@
     }
 
     .auth-card {
-      background: rgba(255,255,255,0.95);
-      border-radius: 30px;
+      background: var(--bg-card);
+      border-radius: 40px;
       padding: 40px 30px;
       max-width: 400px;
       width: 100%;
       text-align: center;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      border: 1px solid var(--border);
+      box-shadow: 0 25px 50px rgba(0,0,0,0.5);
     }
 
     .auth-card h1 {
-      color: #333;
-      font-size: 32px;
+      font-size: 48px;
       margin-bottom: 10px;
+      background: linear-gradient(135deg, var(--yellow), #FFA500);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
     }
 
     .auth-card input {
       width: 100%;
-      padding: 15px;
-      margin: 10px 0;
-      border: 2px solid #e0e0e0;
-      border-radius: 25px;
+      padding: 15px 20px;
+      margin: 12px 0;
+      border: 2px solid var(--border);
+      border-radius: 30px;
       font-size: 16px;
-      font-family: inherit;
+      background: var(--bg-dark);
+      color: white;
       transition: all 0.3s;
     }
 
     .auth-card input:focus {
       outline: none;
-      border-color: #764ba2;
+      border-color: var(--yellow);
     }
 
     .auth-card button {
       width: 100%;
       padding: 15px;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: white;
+      background: var(--yellow);
+      color: #000;
       border: none;
-      border-radius: 25px;
+      border-radius: 30px;
       font-size: 18px;
       font-weight: bold;
       cursor: pointer;
       margin-top: 15px;
-      transition: transform 0.2s;
+      transition: all 0.2s;
     }
 
     .auth-card button:active {
-      transform: scale(0.98);
+      transform: scale(0.97);
+      background: var(--yellow-dark);
     }
 
     .message {
       margin-top: 15px;
-      padding: 10px;
-      border-radius: 10px;
+      padding: 12px;
+      border-radius: 15px;
       font-size: 14px;
     }
 
-    .error-message {
-      background: #fee;
-      color: #c00;
-    }
+    .error-message { background: rgba(255,68,68,0.2); color: #ff8888; border: 1px solid var(--danger); }
+    .waiting-message { background: rgba(255,215,0,0.2); color: var(--yellow); border: 1px solid var(--yellow); }
 
-    .waiting-message {
-      background: #fff3cd;
-      color: #856404;
-    }
-
-    /* التطبيق الرئيسي - يظهر بعد الموافقة */
+    /* ==================== التطبيق الرئيسي ==================== */
     .app-main {
       display: none;
       min-height: 100vh;
       flex-direction: column;
+      background: var(--bg-dark);
     }
 
     /* Header */
@@ -119,8 +131,8 @@
       justify-content: space-between;
       align-items: center;
       padding: 15px 20px;
-      background: #121212;
-      border-bottom: 1px solid #333;
+      background: var(--bg-card);
+      border-bottom: 1px solid var(--border);
       position: sticky;
       top: 0;
       z-index: 100;
@@ -129,7 +141,7 @@
     .app-title {
       font-size: 24px;
       font-weight: bold;
-      background: linear-gradient(135deg, #FFFC00, #FF6B00);
+      background: linear-gradient(135deg, var(--yellow), #FFA500);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
@@ -137,16 +149,22 @@
     .header-icon {
       font-size: 24px;
       cursor: pointer;
-      color: white;
+      color: var(--text-secondary);
+      transition: color 0.2s;
+      padding: 8px;
+      border-radius: 50%;
     }
+
+    .header-icon:active { background: var(--bg-hover); }
+    .header-icon:hover { color: var(--yellow); }
 
     /* Navigation */
     .nav-bar {
       display: flex;
       justify-content: space-around;
-      background: #121212;
-      border-top: 1px solid #333;
-      padding: 10px 0;
+      background: var(--bg-card);
+      border-top: 1px solid var(--border);
+      padding: 12px 0;
       position: fixed;
       bottom: 0;
       width: 100%;
@@ -157,27 +175,27 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      color: #666;
+      color: var(--text-secondary);
       cursor: pointer;
-      transition: color 0.2s;
+      transition: all 0.2s;
+      padding: 5px 15px;
+      border-radius: 30px;
     }
 
     .nav-item.active {
-      color: #FFFC00;
+      color: var(--yellow);
     }
 
-    .nav-item i {
-      font-size: 24px;
-      margin-bottom: 5px;
-    }
+    .nav-item:active { background: var(--bg-hover); }
+    .nav-item i { font-size: 24px; margin-bottom: 5px; }
 
     .content {
       flex: 1;
-      padding-bottom: 70px;
+      padding-bottom: 80px;
       padding-top: 10px;
     }
 
-    /* صفحة القصص */
+    /* ==================== صفحة القصص ==================== */
     .stories-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
@@ -188,16 +206,16 @@
     .story-card {
       position: relative;
       aspect-ratio: 9/16;
-      border-radius: 15px;
+      border-radius: 20px;
       overflow: hidden;
-      background: #1a1a1a;
+      background: var(--bg-card);
       cursor: pointer;
-      transition: transform 0.2s;
+      transition: transform 0.2s, box-shadow 0.2s;
+      border: 1px solid var(--border);
     }
 
-    .story-card:hover {
-      transform: scale(1.02);
-    }
+    .story-card:active { transform: scale(0.98); }
+    .story-card:hover { box-shadow: 0 8px 25px rgba(0,0,0,0.3); }
 
     .story-card img, .story-card video {
       width: 100%;
@@ -210,168 +228,108 @@
       bottom: 0;
       left: 0;
       right: 0;
-      background: linear-gradient(transparent, rgba(0,0,0,0.8));
-      padding: 10px;
+      background: linear-gradient(transparent, rgba(0,0,0,0.9));
+      padding: 12px;
       font-size: 12px;
+    }
+
+    .story-stats {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: rgba(0,0,0,0.6);
+      padding: 5px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      display: flex;
+      gap: 8px;
     }
 
     .add-story {
-      border: 2px dashed #FFFC00;
+      border: 2px dashed var(--yellow);
       display: flex;
+      flex-direction: column;
       justify-content: center;
       align-items: center;
-      background: #1a1a1a;
+      background: var(--bg-card);
     }
 
-    .add-story i {
-      font-size: 40px;
-      color: #FFFC00;
-    }
+    .add-story i { font-size: 40px; color: var(--yellow); margin-bottom: 10px; }
 
-    /* صفحة الأصدقاء */
-    .friends-list, .requests-list {
-      padding: 15px;
-    }
-
-    .friend-card {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: #1a1a1a;
-      padding: 15px;
-      margin: 10px 0;
-      border-radius: 15px;
-    }
-
-    .friend-info {
-      display: flex;
-      align-items: center;
-      gap: 15px;
-    }
-
-    .friend-avatar {
-      width: 50px;
-      height: 50px;
-      background: linear-gradient(135deg, #667eea, #764ba2);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 20px;
-    }
-
-    .friend-name {
-      font-weight: bold;
-    }
-
-    .friend-username {
-      font-size: 12px;
-      color: #999;
-    }
-
-    .btn-icon {
-      background: none;
-      border: none;
-      color: white;
-      font-size: 24px;
-      cursor: pointer;
-      margin: 0 5px;
-    }
-
-    .btn-accept {
-      color: #4caf50;
-    }
-
-    .btn-reject {
-      color: #f44336;
-    }
-
-    .btn-block {
-      color: #ff9800;
-    }
-
-    .btn-chat {
-      color: #2196f3;
-    }
-
-    /* صفحة الدردشة */
-    .chat-header {
-      display: flex;
-      align-items: center;
-      gap: 15px;
-      padding: 15px;
-      background: #1a1a1a;
-    }
-
-    .chat-messages {
-      height: calc(100vh - 200px);
-      overflow-y: auto;
-      padding: 15px;
-    }
-
-    .message {
-      margin: 10px 0;
-      display: flex;
+    /* ==================== مشاهد القصة ==================== */
+    .story-viewer {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #000;
+      z-index: 1500;
+      display: none;
       flex-direction: column;
     }
 
-    .message.sent {
-      align-items: flex-end;
-    }
-
-    .message.received {
-      align-items: flex-start;
-    }
-
-    .message-bubble {
-      max-width: 70%;
-      padding: 10px 15px;
-      border-radius: 20px;
-      margin: 5px 0;
-    }
-
-    .message.sent .message-bubble {
-      background: linear-gradient(135deg, #667eea, #764ba2);
-      color: white;
-    }
-
-    .message.received .message-bubble {
-      background: #1a1a1a;
-      color: white;
-    }
-
-    .message-img {
-      max-width: 200px;
-      border-radius: 15px;
-    }
-
-    .chat-input {
-      display: flex;
-      padding: 15px;
-      background: #1a1a1a;
-      gap: 10px;
-      position: fixed;
-      bottom: 60px;
-      width: 100%;
-    }
-
-    .chat-input input {
+    .story-viewer-content {
       flex: 1;
-      padding: 12px;
-      border: none;
-      border-radius: 25px;
-      background: #333;
-      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
     }
 
-    /* كاميرا للقصص */
+    .story-viewer-content img, .story-viewer-content video {
+      max-width: 100%;
+      max-height: 80%;
+      object-fit: contain;
+    }
+
+    .story-viewer-actions {
+      position: absolute;
+      bottom: 30px;
+      left: 0;
+      right: 0;
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      padding: 15px;
+    }
+
+    .story-action-btn {
+      background: rgba(30,30,30,0.9);
+      border: none;
+      border-radius: 50px;
+      padding: 12px 25px;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s;
+    }
+
+    .story-action-btn:active { transform: scale(0.95); }
+    .story-action-btn.liked { background: var(--yellow); color: #000; }
+
+    .viewers-list {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: rgba(0,0,0,0.7);
+      border-radius: 20px;
+      padding: 10px 15px;
+      font-size: 12px;
+      cursor: pointer;
+    }
+
+    /* ==================== كاميرا القصة ==================== */
     .camera-modal {
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      background: black;
+      background: #000;
       z-index: 2000;
       display: none;
       flex-direction: column;
@@ -385,53 +343,155 @@
 
     .camera-controls {
       position: absolute;
-      bottom: 30px;
+      bottom: 40px;
       width: 100%;
       display: flex;
       justify-content: center;
-      gap: 30px;
+      gap: 40px;
+      padding: 20px;
     }
 
     .camera-btn {
-      width: 70px;
-      height: 70px;
+      width: 80px;
+      height: 80px;
       border-radius: 50%;
       background: white;
-      border: 3px solid #FFFC00;
+      border: 4px solid var(--yellow);
       cursor: pointer;
+      transition: transform 0.1s;
     }
 
-    /* اختيار الصوت للقصة */
+    .camera-btn:active { transform: scale(0.92); }
+
+    .gallery-btn {
+      background: rgba(30,30,30,0.9);
+      border: none;
+      border-radius: 50px;
+      padding: 12px 25px;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    /* ==================== الأصدقاء والدردشة ==================== */
+    .friend-card {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--bg-card);
+      padding: 15px;
+      margin: 10px 15px;
+      border-radius: 20px;
+      border: 1px solid var(--border);
+      transition: all 0.2s;
+    }
+
+    .friend-card:active { background: var(--bg-hover); }
+
+    .btn-icon {
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      font-size: 22px;
+      cursor: pointer;
+      padding: 10px;
+      border-radius: 50%;
+      transition: all 0.2s;
+    }
+
+    .btn-icon:active { background: var(--bg-hover); transform: scale(0.9); }
+    .btn-accept { color: var(--success); }
+    .btn-reject { color: var(--danger); }
+    .btn-chat { color: var(--info); }
+
+    /* ==================== دروشة ==================== */
+    .chat-messages {
+      height: calc(100vh - 180px);
+      overflow-y: auto;
+      padding: 15px;
+    }
+
+    .message {
+      margin: 10px 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .message.sent { align-items: flex-end; }
+    .message.received { align-items: flex-start; }
+
+    .message-bubble {
+      max-width: 75%;
+      padding: 12px 18px;
+      border-radius: 25px;
+      margin: 5px 0;
+      word-break: break-word;
+    }
+
+    .message.sent .message-bubble {
+      background: var(--yellow);
+      color: #000;
+      border-bottom-left-radius: 5px;
+    }
+
+    .message.received .message-bubble {
+      background: var(--bg-card);
+      color: white;
+      border-bottom-right-radius: 5px;
+    }
+
+    .chat-input {
+      display: flex;
+      padding: 15px;
+      background: var(--bg-card);
+      gap: 12px;
+      position: fixed;
+      bottom: 70px;
+      width: 100%;
+    }
+
+    .chat-input input {
+      flex: 1;
+      padding: 12px 18px;
+      border: none;
+      border-radius: 30px;
+      background: var(--bg-dark);
+      color: white;
+    }
+
+    /* ==================== اختيار الصوت ==================== */
     .sound-picker {
       position: fixed;
       bottom: 100px;
       left: 20px;
       right: 20px;
-      background: #1a1a1a;
-      border-radius: 20px;
-      padding: 15px;
+      background: var(--bg-card);
+      border-radius: 25px;
+      padding: 20px;
       display: none;
       z-index: 2001;
+      border: 1px solid var(--border);
     }
 
     .sound-item {
-      padding: 10px;
-      margin: 5px 0;
-      background: #333;
-      border-radius: 10px;
+      padding: 12px;
+      margin: 8px 0;
+      background: var(--bg-dark);
+      border-radius: 15px;
       cursor: pointer;
+      transition: all 0.2s;
     }
 
-    h3 {
-      padding: 15px;
-      color: #FFFC00;
-    }
+    .sound-item:active { background: var(--bg-hover); transform: scale(0.98); }
 
     .tab-bar {
       display: flex;
       gap: 10px;
-      padding: 10px;
-      background: #1a1a1a;
+      padding: 15px;
+      background: var(--bg-card);
     }
 
     .tab {
@@ -439,17 +499,17 @@
       text-align: center;
       padding: 10px;
       cursor: pointer;
-      border-radius: 10px;
+      border-radius: 30px;
+      transition: all 0.2s;
     }
 
     .tab.active {
-      background: #FFFC00;
-      color: black;
+      background: var(--yellow);
+      color: #000;
     }
 
-    .hide {
-      display: none;
-    }
+    h3 { padding: 15px; color: var(--yellow); }
+    .hide { display: none; }
   </style>
 </head>
 <body>
@@ -460,7 +520,7 @@
     <h1>📸 Ribbo</h1>
     <p>سجل دخولك للبدء</p>
     <input type="text" id="regUsername" placeholder="اسم المستخدم" autocomplete="off">
-    <input type="tel" id="regPhone" placeholderرقم الهاتف" autocomplete="off">
+    <input type="tel" id="regPhone" placeholder="رقم الهاتف" autocomplete="off">
     <button onclick="register()">تسجيل الدخول</button>
     <div id="authMessage"></div>
   </div>
@@ -475,17 +535,15 @@
   </div>
 
   <div class="content" id="contentArea">
-    <!-- صفحة القصص -->
     <div id="storiesPage">
       <div class="stories-grid" id="storiesGrid">
         <div class="story-card add-story" onclick="openCamera()">
-          <i class="fas fa-plus"></i>
-          <div class="story-info">إضافة قصة</div>
+          <i class="fas fa-plus-circle"></i>
+          <div>إضافة قصة</div>
         </div>
       </div>
     </div>
 
-    <!-- صفحة الأصدقاء (مخفية) -->
     <div id="friendsPage" style="display: none;">
       <div class="tab-bar">
         <div class="tab active" onclick="showFriendsTab('friends')">الأصدقاء</div>
@@ -495,46 +553,36 @@
       <div id="friendsList"></div>
       <div id="requestsList" style="display: none;"></div>
       <div id="searchList" style="display: none;">
-        <input type="text" id="searchInput" placeholder="بحث باسم المستخدم..." style="width: 90%; margin: 10px; padding: 10px; border-radius: 20px;">
-        <button onclick="searchUsers()" style="margin: 10px; padding: 10px 20px;">بحث</button>
+        <input type="text" id="searchInput" placeholder="🔍 بحث باسم المستخدم..." style="width: 90%; margin: 15px; padding: 12px; border-radius: 30px; background: var(--bg-card); border: none; color: white;">
+        <button onclick="searchUsers()" style="margin: 10px; padding: 12px 25px; background: var(--yellow); border: none; border-radius: 30px; font-weight: bold;">بحث</button>
         <div id="searchResults"></div>
       </div>
     </div>
 
-    <!-- صفحة الدردشة (مخفية) -->
     <div id="chatPage" style="display: none;">
       <div id="chatList">
         <h3>المحادثات</h3>
         <div id="conversationsList"></div>
       </div>
       <div id="chatWindow" style="display: none;">
-        <div class="chat-header">
-          <i class="fas fa-arrow-right" onclick="closeChat()"></i>
-          <span id="chatFriendName"></span>
+        <div class="chat-header" style="display: flex; align-items: center; gap: 15px; padding: 15px; background: var(--bg-card);">
+          <i class="fas fa-arrow-right btn-icon" onclick="closeChat()"></i>
+          <span id="chatFriendName" style="font-weight: bold;"></span>
         </div>
         <div class="chat-messages" id="chatMessages"></div>
         <div class="chat-input">
-          <i class="fas fa-image" style="font-size: 24px; cursor: pointer;" onclick="sendImage()"></i>
+          <i class="fas fa-image btn-icon" onclick="sendImage()"></i>
           <input type="text" id="messageInput" placeholder="اكتب رسالة...">
-          <i class="fas fa-paper-plane" style="font-size: 24px; cursor: pointer;" onclick="sendMessage()"></i>
+          <i class="fas fa-paper-plane btn-icon" onclick="sendMessage()"></i>
         </div>
       </div>
     </div>
   </div>
 
   <div class="nav-bar">
-    <div class="nav-item active" onclick="switchPage('stories')">
-      <i class="fas fa-film"></i>
-      <span>القصص</span>
-    </div>
-    <div class="nav-item" onclick="switchPage('friends')">
-      <i class="fas fa-users"></i>
-      <span>الأصدقاء</span>
-    </div>
-    <div class="nav-item" onclick="switchPage('chat')">
-      <i class="fas fa-comment-dots"></i>
-      <span>الدردشة</span>
-    </div>
+    <div class="nav-item active" onclick="switchPage('stories')"><i class="fas fa-film"></i><span>القصص</span></div>
+    <div class="nav-item" onclick="switchPage('friends')"><i class="fas fa-users"></i><span>الأصدقاء</span></div>
+    <div class="nav-item" onclick="switchPage('chat')"><i class="fas fa-comment-dots"></i><span>الدردشة</span></div>
   </div>
 </div>
 
@@ -543,20 +591,30 @@
   <video id="videoElement" autoplay playsinline></video>
   <canvas id="canvasElement" style="display: none;"></canvas>
   <div class="camera-controls">
+    <button class="gallery-btn" onclick="openGallery()"><i class="fas fa-images"></i> اختيار من المعرض</button>
     <button class="camera-btn" onclick="captureStory()"></button>
   </div>
-  <i class="fas fa-times" style="position: absolute; top: 20px; left: 20px; font-size: 30px; color: white; cursor: pointer;" onclick="closeCamera()"></i>
+  <i class="fas fa-times" style="position: absolute; top: 20px; left: 20px; font-size: 30px; color: white; cursor: pointer; background: rgba(0,0,0,0.5); padding: 10px; border-radius: 50%;" onclick="closeCamera()"></i>
 </div>
 
 <!-- اختيار الصوت -->
 <div class="sound-picker" id="soundPicker">
-  <h3>اختر صوتاً للقصة</h3>
+  <h3>اختر صوتاً للقصة 🎵</h3>
   <div id="soundsList"></div>
-  <button onclick="closeSoundPicker()" style="margin-top: 10px; padding: 10px; background: #f44336; border: none; border-radius: 10px; color: white;">تخطي</button>
+  <button onclick="closeSoundPicker()" style="margin-top: 10px; padding: 12px; background: #333; border: none; border-radius: 30px; color: white; cursor: pointer;">تخطي</button>
+</div>
+
+<!-- مشاهد القصة -->
+<div class="story-viewer" id="storyViewer">
+  <div class="story-viewer-content" id="viewerContent"></div>
+  <div class="viewers-list" id="viewersList" onclick="showViewers()">👁️ مشاهدة</div>
+  <div class="story-viewer-actions">
+    <button class="story-action-btn" id="likeStoryBtn" onclick="toggleLikeCurrentStory()"><i class="fas fa-heart"></i> <span id="likeCount">0</span></button>
+  </div>
+  <i class="fas fa-times" style="position: absolute; top: 20px; right: 20px; font-size: 30px; color: white; cursor: pointer; background: rgba(0,0,0,0.5); padding: 10px; border-radius: 50%;" onclick="closeStoryViewer()"></i>
 </div>
 
 <script>
-  // Firebase Config
   const firebaseConfig = {
     apiKey: "AIzaSyAVkrRal-uya-0YPd87jR1QqJwRTVGKm-0",
     authDomain: "ribbo-ly-abde6.firebaseapp.com",
@@ -575,6 +633,8 @@
   let currentStream = null;
   let selectedSound = null;
   let currentChatWith = null;
+  let currentStoryId = null;
+  let currentStoryData = null;
 
   // تسجيل الدخول
   async function register() {
@@ -587,7 +647,6 @@
       return;
     }
 
-    // التحقق من وجود المستخدم
     const snapshot = await db.ref('users').orderByChild('username').equalTo(username).once('value');
     let userId;
     
@@ -605,7 +664,6 @@
       return;
     }
 
-    // إنشاء مستخدم جديد
     const newUserRef = db.ref('users').push();
     await newUserRef.set({
       username: username,
@@ -635,39 +693,149 @@
   }
 
   // تحميل القصص
-  function loadStories() {
-    db.ref('stories').once('value', snapshot => {
-      const stories = snapshot.val();
-      const container = document.getElementById('storiesGrid');
-      const existingAdd = container.querySelector('.add-story');
-      container.innerHTML = '';
-      container.appendChild(existingAdd);
-      
-      if (stories) {
-        Object.entries(stories).forEach(([id, story]) => {
-          if (story.userId !== currentUser.id && !isBlocked(story.userId)) {
-            const storyDiv = document.createElement('div');
-            storyDiv.className = 'story-card';
-            storyDiv.onclick = () => viewStory(story);
-            if (story.type === 'image') {
-              storyDiv.innerHTML = `<img src="${story.url}" loading="lazy"><div class="story-info">@${story.username}</div>`;
-            } else {
-              storyDiv.innerHTML = `<video src="${story.url}" loading="lazy"></video><div class="story-info">@${story.username}</div>`;
-            }
-            container.appendChild(storyDiv);
+  async function loadStories() {
+    const snapshot = await db.ref('stories').once('value');
+    const stories = snapshot.val();
+    const container = document.getElementById('storiesGrid');
+    container.innerHTML = '<div class="story-card add-story" onclick="openCamera()"><i class="fas fa-plus-circle"></i><div>إضافة قصة</div></div>';
+    
+    if (stories) {
+      for (const [id, story] of Object.entries(stories)) {
+        if (story.userId !== currentUser.id && !currentUser.blocked?.[story.userId]) {
+          const storyDiv = document.createElement('div');
+          storyDiv.className = 'story-card';
+          storyDiv.onclick = () => viewStory(id, story);
+          if (story.type === 'image') {
+            storyDiv.innerHTML = `<img src="${story.url}" loading="lazy"><div class="story-info">@${story.username}</div><div class="story-stats"><i class="fas fa-heart"></i> ${Object.keys(story.likes || {}).length} <i class="fas fa-eye"></i> ${Object.keys(story.views || {}).length}</div>`;
+          } else {
+            storyDiv.innerHTML = `<video src="${story.url}" loading="lazy"></video><div class="story-info">@${story.username}</div><div class="story-stats"><i class="fas fa-heart"></i> ${Object.keys(story.likes || {}).length} <i class="fas fa-eye"></i> ${Object.keys(story.views || {}).length}</div>`;
           }
-        });
+          container.appendChild(storyDiv);
+        }
       }
-    });
+    }
   }
 
-  // كاميرا القصة
+  // عرض القصة مع تسجيل المشاهدة والإعجابات
+  async function viewStory(storyId, story) {
+    currentStoryId = storyId;
+    currentStoryData = story;
+    
+    // تسجيل مشاهدة
+    if (!story.views?.[currentUser.id]) {
+      await db.ref(`stories/${storyId}/views/${currentUser.id}`).set({
+        username: currentUser.username,
+        time: Date.now()
+      });
+    }
+    
+    const viewer = document.getElementById('storyViewer');
+    const content = document.getElementById('viewerContent');
+    content.innerHTML = '';
+    
+    if (story.type === 'image') {
+      content.innerHTML = `<img src="${story.url}" style="max-width:100%; max-height:80%; object-fit:contain;">`;
+    } else {
+      content.innerHTML = `<video src="${story.url}" controls autoplay style="max-width:100%; max-height:80%;"></video>`;
+    }
+    
+    const likeCount = Object.keys(story.likes || {}).length;
+    document.getElementById('likeCount').innerText = likeCount;
+    const isLiked = story.likes?.[currentUser.id];
+    const likeBtn = document.getElementById('likeStoryBtn');
+    if (isLiked) likeBtn.classList.add('liked');
+    else likeBtn.classList.remove('liked');
+    
+    const viewersCount = Object.keys(story.views || {}).length;
+    document.getElementById('viewersList').innerHTML = `👁️ ${viewersCount} مشاهدة`;
+    
+    viewer.style.display = 'flex';
+    
+    // تشغيل الصوت إذا وجد
+    if (story.sound) {
+      const audio = new Audio(story.sound);
+      audio.play();
+    }
+  }
+  
+  async function toggleLikeCurrentStory() {
+    if (!currentStoryId) return;
+    const storyRef = db.ref(`stories/${currentStoryId}/likes/${currentUser.id}`);
+    const snapshot = await storyRef.once('value');
+    if (snapshot.exists()) {
+      await storyRef.remove();
+    } else {
+      await storyRef.set({
+        username: currentUser.username,
+        time: Date.now()
+      });
+    }
+    // تحديث العرض
+    const updatedStory = (await db.ref(`stories/${currentStoryId}`).once('value')).val();
+    if (updatedStory) {
+      const newCount = Object.keys(updatedStory.likes || {}).length;
+      document.getElementById('likeCount').innerText = newCount;
+      const isNowLiked = updatedStory.likes?.[currentUser.id];
+      const likeBtn = document.getElementById('likeStoryBtn');
+      if (isNowLiked) likeBtn.classList.add('liked');
+      else likeBtn.classList.remove('liked');
+    }
+  }
+  
+  function showViewers() {
+    if (!currentStoryData) return;
+    const viewers = currentStoryData.views || {};
+    const viewersList = Object.values(viewers).map(v => `👤 ${v.username}`).join('\n');
+    alert(`المشاهدات (${Object.keys(viewers).length}):\n${viewersList || 'لا توجد مشاهدات'}`);
+  }
+  
+  function closeStoryViewer() {
+    document.getElementById('storyViewer').style.display = 'none';
+    currentStoryId = null;
+    currentStoryData = null;
+  }
+
+  // كاميرا القصة (صورة فقط)
   async function openCamera() {
     document.getElementById('cameraModal').style.display = 'flex';
-    const video = document.getElementById('videoElement');
-    const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-    currentStream = stream;
-    video.srcObject = stream;
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+      currentStream = stream;
+      document.getElementById('videoElement').srcObject = stream;
+    } catch(e) {
+      alert('لا يمكن الوصول للكاميرا');
+    }
+  }
+
+  function openGallery() {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+    input.onchange = async (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        const fileName = `stories/${currentUser.id}_${Date.now()}.jpg`;
+        const uploadTask = storage.ref(fileName).put(file);
+        uploadTask.on('state_changed', null, null, async () => {
+          const url = await uploadTask.snapshot.ref.getDownloadURL();
+          await db.ref('stories').push({
+            userId: currentUser.id,
+            username: currentUser.username,
+            type: 'image',
+            url: url,
+            time: Date.now(),
+            sound: selectedSound,
+            likes: {},
+            views: {}
+          });
+          selectedSound = null;
+          closeCamera();
+          loadStories();
+          alert('تم نشر القصة بنجاح!');
+        });
+      }
+    };
+    input.click();
   }
 
   function closeCamera() {
@@ -687,18 +855,16 @@
       const uploadTask = storage.ref(fileName).put(blob);
       uploadTask.on('state_changed', null, null, async () => {
         const url = await uploadTask.snapshot.ref.getDownloadURL();
-        
-        // إضافة الصوت إذا تم اختياره
-        const storyData = {
+        await db.ref('stories').push({
           userId: currentUser.id,
           username: currentUser.username,
           type: 'image',
           url: url,
           time: Date.now(),
-          sound: selectedSound
-        };
-        
-        await db.ref('stories').push(storyData);
+          sound: selectedSound,
+          likes: {},
+          views: {}
+        });
         selectedSound = null;
         closeCamera();
         loadStories();
@@ -707,7 +873,7 @@
     }, 'image/jpeg');
   }
 
-  // إدارة الأصدقاء
+  // الأصدقاء والدردشة
   async function loadFriends() {
     const friendsList = document.getElementById('friendsList');
     friendsList.innerHTML = '';
@@ -719,17 +885,8 @@
       if (friend && friend.status === 'approved') {
         friendsList.innerHTML += `
           <div class="friend-card">
-            <div class="friend-info">
-              <div class="friend-avatar">👤</div>
-              <div>
-                <div class="friend-name">${friend.username}</div>
-                <div class="friend-username">@${friend.username}</div>
-              </div>
-            </div>
-            <div>
-              <i class="fas fa-comment btn-icon btn-chat" onclick="startChat('${friendId}', '${friend.username}')"></i>
-              <i class="fas fa-ban btn-icon btn-block" onclick="blockUser('${friendId}')"></i>
-            </div>
+            <div class="friend-info"><div><strong>${friend.username}</strong><div style="font-size:12px; color:#aaa;">@${friend.username}</div></div></div>
+            <div><i class="fas fa-comment btn-icon btn-chat" onclick="startChat('${friendId}', '${friend.username}')"></i><i class="fas fa-ban btn-icon" style="color:#ff9800;" onclick="blockUser('${friendId}')"></i></div>
           </div>
         `;
       }
@@ -744,32 +901,18 @@
     
     snapshot.forEach(userSnap => {
       const user = userSnap.val();
-      if (user.status === 'approved' && user.username.toLowerCase().includes(query) && user.id !== currentUser.id) {
+      if (user.status === 'approved' && user.username.toLowerCase().includes(query) && userSnap.key !== currentUser.id) {
         const isFriend = currentUser.friends?.[userSnap.key];
-        const isRequested = currentUser.friendRequests?.[userSnap.key];
-        results.innerHTML += `
-          <div class="friend-card">
-            <div class="friend-info">
-              <div>${user.username}</div>
-            </div>
-            ${!isFriend && !isRequested ? `<button onclick="sendFriendRequest('${userSnap.key}')">➕ إضافة</button>` : ''}
-            ${isRequested ? '<span>⏳ في الانتظار</span>' : ''}
-          </div>
-        `;
+        results.innerHTML += `<div class="friend-card"><div>${user.username}</div>${!isFriend ? `<button class="btn-icon btn-accept" onclick="sendFriendRequest('${userSnap.key}')">➕ إضافة</button>` : '<span>صديق</span>'}</div>`;
       }
     });
   }
 
   async function sendFriendRequest(toId) {
-    await db.ref(`friendRequests/${toId}/${currentUser.id}`).set({
-      fromId: currentUser.id,
-      fromUsername: currentUser.username,
-      time: Date.now()
-    });
+    await db.ref(`friendRequests/${toId}/${currentUser.id}`).set({ fromId: currentUser.id, fromUsername: currentUser.username, time: Date.now() });
     alert('تم إرسال الطلب');
   }
 
-  // الدردشة
   async function startChat(userId, username) {
     currentChatWith = userId;
     document.getElementById('chatList').style.display = 'none';
@@ -780,6 +923,7 @@
 
   async function loadMessages() {
     const messagesRef = db.ref(`messages/${currentUser.id}_${currentChatWith}`).orderByChild('time');
+    messagesRef.off();
     messagesRef.on('value', snapshot => {
       const container = document.getElementById('chatMessages');
       container.innerHTML = '';
@@ -787,11 +931,8 @@
         const msg = msgSnap.val();
         const div = document.createElement('div');
         div.className = `message ${msg.fromId === currentUser.id ? 'sent' : 'received'}`;
-        if (msg.type === 'text') {
-          div.innerHTML = `<div class="message-bubble">${msg.text}</div>`;
-        } else {
-          div.innerHTML = `<img src="${msg.url}" class="message-img">`;
-        }
+        if (msg.type === 'text') div.innerHTML = `<div class="message-bubble">${msg.text}</div>`;
+        else div.innerHTML = `<img src="${msg.url}" class="message-img" style="max-width:150px; border-radius:15px;">`;
         container.appendChild(div);
       });
       container.scrollTop = container.scrollHeight;
@@ -802,13 +943,7 @@
     const input = document.getElementById('messageInput');
     const text = input.value.trim();
     if (!text) return;
-    
-    await db.ref(`messages/${currentUser.id}_${currentChatWith}`).push({
-      fromId: currentUser.id,
-      text: text,
-      type: 'text',
-      time: Date.now()
-    });
+    await db.ref(`messages/${currentUser.id}_${currentChatWith}`).push({ fromId: currentUser.id, text, type: 'text', time: Date.now() });
     input.value = '';
   }
 
@@ -822,12 +957,7 @@
       const uploadTask = storage.ref(fileName).put(file);
       uploadTask.on('state_changed', null, null, async () => {
         const url = await uploadTask.snapshot.ref.getDownloadURL();
-        await db.ref(`messages/${currentUser.id}_${currentChatWith}`).push({
-          fromId: currentUser.id,
-          url: url,
-          type: 'image',
-          time: Date.now()
-        });
+        await db.ref(`messages/${currentUser.id}_${currentChatWith}`).push({ fromId: currentUser.id, url, type: 'image', time: Date.now() });
       });
     };
     input.click();
@@ -842,22 +972,11 @@
   async function loadConversations() {
     const container = document.getElementById('conversationsList');
     container.innerHTML = '';
-    // تبسيط: عرض الأصدقاء كمحادثات
     const friends = currentUser.friends || {};
     for (let friendId of Object.keys(friends)) {
       const friendSnap = await db.ref(`users/${friendId}`).once('value');
       const friend = friendSnap.val();
-      if (friend) {
-        container.innerHTML += `
-          <div class="friend-card" onclick="startChat('${friendId}', '${friend.username}')">
-            <div class="friend-info">
-              <div class="friend-avatar">👤</div>
-              <div>${friend.username}</div>
-            </div>
-            <i class="fas fa-comment"></i>
-          </div>
-        `;
-      }
+      if (friend) container.innerHTML += `<div class="friend-card" onclick="startChat('${friendId}', '${friend.username}')"><div><strong>${friend.username}</strong></div><i class="fas fa-comment"></i></div>`;
     }
   }
 
@@ -865,15 +984,10 @@
     document.getElementById('storiesPage').style.display = page === 'stories' ? 'block' : 'none';
     document.getElementById('friendsPage').style.display = page === 'friends' ? 'block' : 'none';
     document.getElementById('chatPage').style.display = page === 'chat' ? 'block' : 'none';
-    
-    const navs = document.querySelectorAll('.nav-item');
-    navs.forEach((nav, idx) => {
-      nav.classList.remove('active');
-      if ((page === 'stories' && idx === 0) || (page === 'friends' && idx === 1) || (page === 'chat' && idx === 2)) {
-        nav.classList.add('active');
-      }
-    });
-    
+    document.querySelectorAll('.nav-item').forEach((nav, idx) => nav.classList.remove('active'));
+    if (page === 'stories') document.querySelector('.nav-item:first-child').classList.add('active');
+    else if (page === 'friends') document.querySelector('.nav-item:nth-child(2)').classList.add('active');
+    else document.querySelector('.nav-item:last-child').classList.add('active');
     if (page === 'friends') loadFriends();
     if (page === 'chat') loadConversations();
   }
@@ -882,6 +996,40 @@
     document.getElementById('friendsList').style.display = tab === 'friends' ? 'block' : 'none';
     document.getElementById('requestsList').style.display = tab === 'requests' ? 'block' : 'none';
     document.getElementById('searchList').style.display = tab === 'search' ? 'block' : 'none';
+    if (tab === 'requests') loadRequests();
+  }
+
+  async function loadRequests() {
+    const requestsSnap = await db.ref(`friendRequests/${currentUser.id}`).once('value');
+    const requests = requestsSnap.val();
+    const container = document.getElementById('requestsList');
+    container.innerHTML = '';
+    if (requests) {
+      for (let [fromId, req] of Object.entries(requests)) {
+        container.innerHTML += `<div class="friend-card"><div>${req.fromUsername}</div><div><button class="btn-icon btn-accept" onclick="acceptRequest('${fromId}')"><i class="fas fa-check"></i></button><button class="btn-icon btn-reject" onclick="rejectRequest('${fromId}')"><i class="fas fa-times"></i></button></div></div>`;
+      }
+    } else container.innerHTML = '<p style="text-align:center; padding:20px;">لا توجد طلبات</p>';
+  }
+
+  async function acceptRequest(fromId) {
+    await db.ref(`users/${currentUser.id}/friends/${fromId}`).set(true);
+    await db.ref(`users/${fromId}/friends/${currentUser.id}`).set(true);
+    await db.ref(`friendRequests/${currentUser.id}/${fromId}`).remove();
+    loadFriends();
+    loadRequests();
+  }
+
+  async function rejectRequest(fromId) {
+    await db.ref(`friendRequests/${currentUser.id}/${fromId}`).remove();
+    loadRequests();
+  }
+
+  async function blockUser(userId) {
+    await db.ref(`users/${currentUser.id}/blocked/${userId}`).set(true);
+    await db.ref(`users/${currentUser.id}/friends/${userId}`).remove();
+    await db.ref(`users/${userId}/friends/${currentUser.id}`).remove();
+    alert('تم حظر المستخدم');
+    loadFriends();
   }
 
   async function loadSounds() {
@@ -889,38 +1037,13 @@
     const sounds = snapshot.val();
     const container = document.getElementById('soundsList');
     container.innerHTML = '';
-    if (sounds) {
-      Object.values(sounds).forEach(sound => {
-        container.innerHTML += `<div class="sound-item" onclick="selectSound('${sound.url}')">🎵 ${sound.name}</div>`;
-      });
-    }
+    if (sounds) Object.values(sounds).forEach(sound => container.innerHTML += `<div class="sound-item" onclick="selectSound('${sound.url}')">🎵 ${sound.name}</div>`);
+    else container.innerHTML = '<p>لا توجد أصوات متاحة</p>';
   }
 
-  function selectSound(url) {
-    selectedSound = url;
-    alert('تم اختيار الصوت!');
-    closeSoundPicker();
-    const audio = new Audio(url);
-    audio.play();
-  }
-
-  function showSounds() {
-    document.getElementById('soundPicker').style.display = 'block';
-  }
-
-  function closeSoundPicker() {
-    document.getElementById('soundPicker').style.display = 'none';
-  }
-
-  function isBlocked(userId) {
-    return currentUser.blocked?.[userId];
-  }
-
-  async function blockUser(userId) {
-    await db.ref(`users/${currentUser.id}/blocked/${userId}`).set(true);
-    alert('تم حظر المستخدم');
-    loadFriends();
-  }
+  function selectSound(url) { selectedSound = url; alert('تم اختيار الصوت!'); closeSoundPicker(); new Audio(url).play(); }
+  function showSounds() { document.getElementById('soundPicker').style.display = 'block'; }
+  function closeSoundPicker() { document.getElementById('soundPicker').style.display = 'none'; }
 </script>
 </body>
 </html>
